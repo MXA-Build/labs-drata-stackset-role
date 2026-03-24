@@ -1,3 +1,7 @@
+terraform {
+  backend "s3" {}
+}
+
 # get the organization info
 data "aws_organizations_organization" "organization" {}
 

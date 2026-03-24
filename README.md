@@ -5,6 +5,38 @@ AWS Cloudformation terraform script to create the Drata Autopilot role across an
 
 _Optionally you may create the CloudFormation StackSet directly in the console, download the [json template](https://github.com/drata/aws-cloudformation-drata-setup/blob/main/drata_cloudformation_stackset_template.json) and upload it as a template resource._
 
+## Root Account Deployment Script
+
+This fork includes `./deploy-root-account.sh` to run `terraform init` (S3 backend), `validate`, and `plan`/`apply` from the management account.
+
+The script currently targets all accounts in hardcoded OUs:
+- `ou-2vnf-7sz2mtcb` (PRODUCTION)
+- `ou-2vnf-4b1j7jgx` (TENANT / clients)
+
+It also includes additional hardcoded account IDs:
+- `216569733182` (`SharedService.DevOps.Prod`)
+- `400516939372` (`SharedService.Networking.Prod`)
+
+### Usage
+
+```sh
+./deploy-root-account.sh plan
+./deploy-root-account.sh apply
+```
+
+### Optional Environment Overrides
+
+- `DRATA_EXTERNAL_ID` (default: `5c6e3f31-9295-4753-9199-d3cfa1d6bda8`)
+- `STACKSET_REGION` (default: `us-west-2`)
+- `STACK_SET_NAME` (default: `drata-role-terraform-stack-set`)
+- `DRATA_AWS_ACCOUNT_ID` (default: `269135526815`)
+- `ACCOUNT_FILTER_TYPE` (default: `UNION`)
+- `AWS_PROFILE` (default: `Labs-Root-Administrator`)
+- `AWS_REGION` (default: `ap-southeast-2`)
+- `TF_STATE_BUCKET` (default: `603033204797-tf-state`)
+- `TF_LOCK_TABLE` (default: `603033204797-tf-lock`)
+- `TF_STATE_KEY` (default: `security/drata-stackset-role/terraform.tfstate`)
+
 ## Example Usage
 
 The example below uses `ref=main` (which is appended in the URL),  but it is recommended to use a specific tag version (i.e. `ref=1.0.0`) to avoid breaking changes. Go to the [release page](https://github.com/drata/aws-cloudformation-drata-setup/releases) for a list of published versions.
