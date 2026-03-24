@@ -12,16 +12,14 @@ This fork includes `./deploy-root-account.sh` to run `terraform init` (S3 backen
 The script currently targets all accounts in hardcoded OUs:
 - `ou-2vnf-7sz2mtcb` (PRODUCTION)
 - `ou-2vnf-4b1j7jgx` (TENANT / clients)
-
-It also includes additional hardcoded account IDs:
-- `216569733182` (`SharedService.DevOps.Prod`)
-- `400516939372` (`SharedService.Networking.Prod`)
+- `ou-2vnf-01sfjhj0`
 
 ### Usage
 
 ```sh
 ./deploy-root-account.sh plan
 ./deploy-root-account.sh apply
+./deploy-root-account.sh destroy
 ```
 
 ### Optional Environment Overrides

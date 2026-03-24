@@ -6,20 +6,18 @@ usage() {
 Usage:
   ./deploy-root-account.sh plan
   ./deploy-root-account.sh apply
+  ./deploy-root-account.sh destroy
 
 Environment variables:
   DRATA_EXTERNAL_ID            Default: 5c6e3f31-9295-4753-9199-d3cfa1d6bda8
   STACKSET_REGION              Default: us-west-2
   STACK_SET_NAME               Default: drata-role-terraform-stack-set
   DRATA_AWS_ACCOUNT_ID         Default: 269135526815
-  ACCOUNT_FILTER_TYPE          Default: UNION
 
   This script deploys to all accounts in hardcoded OUs:
   - ou-2vnf-7sz2mtcb (PRODUCTION)
   - ou-2vnf-4b1j7jgx (TENANT / clients)
-  Plus hardcoded additional account IDs:
-  - 216569733182 (SharedService.DevOps.Prod)
-  - 400516939372 (SharedService.Networking.Prod)
+  - ou-2vnf-01sfjhj0
 
   AWS_PROFILE                  Default: Labs-Root-Administrator
   AWS_REGION                   Default: ap-southeast-2
@@ -36,7 +34,7 @@ fi
 
 ACTION="$1"
 case "$ACTION" in
-  plan|apply) ;;
+  plan|apply|destroy) ;;
   *)
     usage
     exit 1
@@ -50,12 +48,10 @@ AWS_REGION="${AWS_REGION:-ap-southeast-2}"
 TF_STATE_KEY="${TF_STATE_KEY:-security/drata-stackset-role/terraform.tfstate}"
 
 DRATA_EXTERNAL_ID="${DRATA_EXTERNAL_ID:-5c6e3f31-9295-4753-9199-d3cfa1d6bda8}"
-STACKSET_REGION="${STACKSET_REGION:-us-west-2}"
+STACKSET_REGION="${STACKSET_REGION:-ap-southeast-2}"
 STACK_SET_NAME="${STACK_SET_NAME:-drata-role-terraform-stack-set}"
 DRATA_AWS_ACCOUNT_ID="${DRATA_AWS_ACCOUNT_ID:-269135526815}"
-ACCOUNT_FILTER_TYPE="${ACCOUNT_FILTER_TYPE:-UNION}"
-ORGANIZATIONAL_UNIT_IDS='["ou-2vnf-7sz2mtcb","ou-2vnf-4b1j7jgx"]'
-TARGET_ACCOUNT_IDS='["216569733182","400516939372"]'
+ORGANIZATIONAL_UNIT_IDS='["ou-2vnf-7sz2mtcb","ou-2vnf-4b1j7jgx","ou-2vnf-01sfjhj0"]'
 
 export AWS_PROFILE
 export AWS_REGION
@@ -75,8 +71,6 @@ set -- terraform "$ACTION" \
   -var="stackset_region=${STACKSET_REGION}" \
   -var="stack_set_name=${STACK_SET_NAME}" \
   -var="drata_aws_account_id=${DRATA_AWS_ACCOUNT_ID}" \
-  -var="account_filter_type=${ACCOUNT_FILTER_TYPE}" \
-  -var="organizational_unit_ids=${ORGANIZATIONAL_UNIT_IDS}" \
-  -var="target_account_ids=${TARGET_ACCOUNT_IDS}"
+  -var="organizational_unit_ids=${ORGANIZATIONAL_UNIT_IDS}"
 
 "$@"
